@@ -1,0 +1,96 @@
+.nl-wrapper {
+  padding: 0 5vw;
+  margin-top: 0px;
+}
+
+.nl-bar {
+  max-width: 1280px;
+  margin: 0 auto;
+  border-radius: 20px;
+  padding: 40px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.nl-heading {
+  margin: 0;
+  max-width: 420px;
+  line-height: 1.25;
+}
+
+.nl-form {
+  flex: 1 1 380px;
+  max-width: 420px;
+}
+
+.nl-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nl-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-size: 14px;
+}
+
+.nl-input:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.nl-button {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.nl-button:hover {
+  opacity: 0.85;
+}
+
+.nl-success-message {
+  color: #ffffff;
+  font-size: 13px;
+  margin: 10px 0 0;
+}
+
+.nl-error-message {
+  color: #ff8080;
+  font-size: 13px;
+  margin: 10px 0 0;
+}
+
+/* ---------- Mobile ---------- */
+@media screen and (max-width: 749px) {
+  .nl-wrapper {
+    margin-top: 20px;
+  }
+
+  .nl-bar {
+    padding: 28px 24px;
+    border-radius: 16px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .nl-heading {
+    max-width: 100%;
+  }
+
+  .nl-form {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}

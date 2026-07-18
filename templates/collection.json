@@ -1,0 +1,48 @@
+{
+  "sections": {
+    "main": {
+      "type": "casual-collection",
+      "settings": {},
+      "blocks": {
+        "type-tshirt": { "type": "type_option", "settings": { "label": "T-shirts", "tag_value": "type_tshirt" } },
+        "type-shorts": { "type": "type_option", "settings": { "label": "Shorts", "tag_value": "type_shorts" } },
+        "type-shirts": { "type": "type_option", "settings": { "label": "Shirts", "tag_value": "type_shirts" } },
+        "type-hoodie": { "type": "type_option", "settings": { "label": "Hoodie", "tag_value": "type_hoodie" } },
+        "type-jeans": { "type": "type_option", "settings": { "label": "Jeans", "tag_value": "type_jeans" } },
+
+        "color-green": { "type": "color_option", "settings": { "label": "Green", "color": "#3DB54A", "tag_value": "color_green" } },
+        "color-red": { "type": "color_option", "settings": { "label": "Red", "color": "#EE2C2C", "tag_value": "color_red" } },
+        "color-yellow": { "type": "color_option", "settings": { "label": "Yellow", "color": "#F5CB35", "tag_value": "color_yellow" } },
+        "color-orange": { "type": "color_option", "settings": { "label": "Orange", "color": "#F98A34", "tag_value": "color_orange" } },
+        "color-cyan": { "type": "color_option", "settings": { "label": "Cyan", "color": "#3FCBE5", "tag_value": "color_cyan" } },
+        "color-blue": { "type": "color_option", "settings": { "label": "Blue", "color": "#2151D1", "tag_value": "color_blue" } },
+        "color-purple": { "type": "color_option", "settings": { "label": "Purple", "color": "#7443C4", "tag_value": "color_purple" } },
+        "color-pink": { "type": "color_option", "settings": { "label": "Pink", "color": "#E8398C", "tag_value": "color_pink" } },
+        "color-white": { "type": "color_option", "settings": { "label": "White", "color": "#FFFFFF", "tag_value": "color_white" } },
+        "color-black": { "type": "color_option", "settings": { "label": "Black", "color": "#111111", "tag_value": "color_black" } },
+
+        "size-xxsmall": { "type": "size_option", "settings": { "label": "XX-Small", "tag_value": "size_xxsmall" } },
+        "size-xsmall": { "type": "size_option", "settings": { "label": "X-Small", "tag_value": "size_xsmall" } },
+        "size-small": { "type": "size_option", "settings": { "label": "Small", "tag_value": "size_small" } },
+        "size-medium": { "type": "size_option", "settings": { "label": "Medium", "tag_value": "size_medium" } },
+        "size-large": { "type": "size_option", "settings": { "label": "Large", "tag_value": "size_large" } },
+        "size-xlarge": { "type": "size_option", "settings": { "label": "X-Large", "tag_value": "size_xlarge" } },
+        "size-xxlarge": { "type": "size_option", "settings": { "label": "XX-Large", "tag_value": "size_xxlarge" } },
+        "size-3xlarge": { "type": "size_option", "settings": { "label": "3X-Large", "tag_value": "size_3xlarge" } },
+        "size-4xlarge": { "type": "size_option", "settings": { "label": "4X-Large", "tag_value": "size_4xlarge" } },
+
+        "style-casual": { "type": "style_option", "settings": { "label": "Casual", "tag_value": "style_casual" } },
+        "style-formal": { "type": "style_option", "settings": { "label": "Formal", "tag_value": "style_formal" } },
+        "style-party": { "type": "style_option", "settings": { "label": "Party", "tag_value": "style_party" } },
+        "style-gym": { "type": "style_option", "settings": { "label": "Gym", "tag_value": "style_gym" } }
+      },
+      "block_order": [
+        "type-tshirt", "type-shorts", "type-shirts", "type-hoodie", "type-jeans",
+        "color-green", "color-red", "color-yellow", "color-orange", "color-cyan", "color-blue", "color-purple", "color-pink", "color-white", "color-black",
+        "size-xxsmall", "size-xsmall", "size-small", "size-medium", "size-large", "size-xlarge", "size-xxlarge", "size-3xlarge", "size-4xlarge",
+        "style-casual", "style-formal", "style-party", "style-gym"
+      ]
+    }
+  },
+  "order": ["main"]
+}

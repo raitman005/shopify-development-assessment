@@ -1,0 +1,371 @@
+{{ 'cfooter.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --ftr-bg: {{ section.settings.background_color }};
+    --ftr-heading-color: {{ section.settings.column_heading_color }};
+    --ftr-text-color: {{ section.settings.text_color }};
+    --ftr-link-color: {{ section.settings.link_color }};
+    --ftr-border-color: {{ section.settings.divider_color }};
+    --ftr-icon-color: {{ section.settings.icon_color }};
+  }
+
+  {%- if section.settings.font_medium_url != blank -%}
+    @font-face {
+      font-family: 'Integra CF';
+      src: url('{{ section.settings.font_medium_url }}') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+  {%- endif -%}
+  {%- if section.settings.font_bold_url != blank -%}
+    @font-face {
+      font-family: 'Integra CF';
+      src: url('{{ section.settings.font_bold_url }}') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .ftr-font {
+    font-family: {% if section.settings.font_medium_url != blank or section.settings.font_bold_url != blank %}'Integra CF',{% endif %} {{ section.settings.fallback_font }};
+  }
+  #shopify-section-{{ section.id }} .ftr-description ,#shopify-section-{{ section.id }} .ftr-link-list a{
+    font-family: 'Satoshi Variable', sans-serif;
+  }
+{%- endstyle -%}
+
+<footer class="ftr-wrapper" style="background-color: var(--ftr-bg);">
+  <div class="ftr-inner">
+
+    <div class="ftr-top">
+      <div class="ftr-brand">
+        <p class="ftr-font ftr-logo" style="color: var(--ftr-heading-color); font-weight: {{ section.settings.logo_font_weight }};">
+          {{ section.settings.logo_text }}
+        </p>
+        <p class="ftr-font ftr-description" style="color: var(--ftr-text-color);">
+          {{ section.settings.description }}
+        </p>
+
+        {%- liquid
+          assign social_blocks = section.blocks | where: 'type', 'social_link'
+        -%}
+        {%- if social_blocks.size > 0 -%}
+          <div class="ftr-socials">
+            {%- for block in social_blocks -%}
+              <a
+                href="{{ block.settings.url | default: '#' }}"
+                class="ftr-social-icon"
+                style="color: var(--ftr-icon-color); border-color: var(--ftr-icon-color);"
+                aria-label="{{ block.settings.platform }}"
+                {{ block.shopify_attributes }}
+              >
+                {%- case block.settings.platform -%}
+                  {%- when 'twitter' -%}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.9c-.7.3-1.5.6-2.3.7.8-.5 1.4-1.3 1.7-2.3-.8.5-1.7.8-2.6 1a4.1 4.1 0 0 0-7 3.7A11.6 11.6 0 0 1 3.4 4.6a4.1 4.1 0 0 0 1.3 5.5c-.7 0-1.3-.2-1.9-.5v.1c0 2 1.4 3.6 3.3 4a4.2 4.2 0 0 1-1.9.1 4.1 4.1 0 0 0 3.8 2.8A8.2 8.2 0 0 1 2 18.4a11.6 11.6 0 0 0 6.3 1.8c7.5 0 11.7-6.3 11.7-11.7v-.5c.8-.6 1.5-1.3 2-2.1z"/></svg>
+                  {%- when 'facebook' -%}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.4h2.8l.4-3.3h-3.2V8.1c0-.9.3-1.6 1.7-1.6h1.7V3.5c-.3 0-1.4-.1-2.6-.1-2.6 0-4.4 1.6-4.4 4.5v2.5H6.9v3.3h3v8.4h3.6z"/></svg>
+                  {%- when 'instagram' -%}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none"/></svg>
+                  {%- when 'youtube' -%}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12s0-3.2-.4-4.7a2.9 2.9 0 0 0-2-2C17.9 5 12 5 12 5s-5.9 0-7.6.3a2.9 2.9 0 0 0-2 2C2 8.8 2 12 2 12s0 3.2.4 4.7a2.9 2.9 0 0 0 2 2C6.1 19 12 19 12 19s5.9 0 7.6-.3a2.9 2.9 0 0 0 2-2C22 15.2 22 12 22 12z"/><path d="M10 15.3V8.7L15.8 12z" fill="#fff"/></svg>
+                  {%- when 'tiktok' -%}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.2c.7 1.4 2 2.5 3.6 2.8v2.6a6.6 6.6 0 0 1-3.6-1.1v6.2a5.4 5.4 0 1 1-4.7-5.3v2.7a2.7 2.7 0 1 0 2 2.6V2.5h2.7c0 .1 0 .5 0 .1 0 .9.3 1.8.9 2.6z"/></svg>
+                  {%- when 'pinterest' -%}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.6 19.3c0-.8-.1-2 .1-2.8l1.3-5.7s-.3-.7-.3-1.6c0-1.5.9-2.7 2-2.7.9 0 1.4.7 1.4 1.5 0 .9-.6 2.3-.9 3.5-.3 1.1.5 2 1.6 2 1.9 0 3.2-2.4 3.2-5.3 0-2.2-1.5-3.9-4.2-3.9-3 0-4.9 2.3-4.9 4.8 0 .9.3 1.5.7 2 .2.2.2.3.1.6l-.2.9c-.1.3-.3.4-.6.3-1.6-.7-2.4-2.5-2.4-4.5 0-3.4 2.8-7.4 8.4-7.4 4.5 0 7.4 3.2 7.4 6.7 0 4.6-2.6 8-6.3 8-1.3 0-2.5-.7-2.9-1.5l-.8 3c-.3 1-.9 2.1-1.4 2.9A10 10 0 1 0 12 2z"/></svg>
+                  {%- when 'linkedin' -%}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6.9 8.4H3.6V20H6.9V8.4zM5.3 3.5a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8zM20.4 20h-3.3v-6c0-1.4 0-3.3-2-3.3s-2.4 1.6-2.4 3.2V20H9.4V8.4h3.2v1.6h.1c.4-.8 1.5-1.7 3.1-1.7 3.4 0 4 2.2 4 5.1V20z"/></svg>
+                {%- endcase -%}
+              </a>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="ftr-columns">
+        {%- for i in (1..4) -%}
+          {%- liquid
+            case i
+              when 1
+                assign column_title = section.settings.column_1_title
+              when 2
+                assign column_title = section.settings.column_2_title
+              when 3
+                assign column_title = section.settings.column_3_title
+              when 4
+                assign column_title = section.settings.column_4_title
+            endcase
+            assign column_links = section.blocks | where: 'type', 'footer_link'
+          -%}
+
+          {%- if column_title != blank -%}
+            <div class="ftr-column">
+              <p class="ftr-font ftr-column-title" style="color: var(--ftr-heading-color);">{{ column_title }}</p>
+              <ul class="ftr-link-list">
+                {%- for block in column_links -%}
+                  {%- assign block_column = block.settings.column | plus: 0 -%}
+                  {%- if block_column == i -%}
+                    <li>
+                      <a
+                        href="{{ block.settings.url | default: '#' }}"
+                        class="ftr-font ftr-link"
+                        style="color: var(--ftr-link-color);"
+                        {{ block.shopify_attributes }}
+                      >
+                        {{ block.settings.label }}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <div class="ftr-divider" style="border-color: var(--ftr-border-color);"></div>
+
+    <div class="ftr-bottom">
+      <p class="ftr-font ftr-copyright" style="color: var(--ftr-text-color);">
+        {{ section.settings.copyright_text }}
+      </p>
+
+      {%- if section.settings.show_payment_icons -%}
+        <ul class="ftr-payment-icons" role="list">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'ftr-payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Site Footer",
+  "tag": "footer",
+  "class": "section-site-footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "SHOP.CO"
+    },
+    {
+      "type": "select",
+      "id": "logo_font_weight",
+      "label": "Logo weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "We have clothes that suit your style and which you're proud to wear. From women to men."
+    },
+    {
+      "type": "header",
+      "content": "Columns"
+    },
+    {
+      "type": "text",
+      "id": "column_1_title",
+      "label": "Column 1 title",
+      "default": "COMPANY"
+    },
+    {
+      "type": "text",
+      "id": "column_2_title",
+      "label": "Column 2 title",
+      "default": "HELP"
+    },
+    {
+      "type": "text",
+      "id": "column_3_title",
+      "label": "Column 3 title",
+      "default": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "column_4_title",
+      "label": "Column 4 title",
+      "default": "RESOURCES"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "Shop.co © 2000-2023, All Rights Reserved"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "info": "Automatically shows the icons for payment methods enabled in Shopify admin — no manual setup needed.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Custom font (Integra CF)"
+    },
+    {
+      "type": "url",
+      "id": "font_medium_url",
+      "label": "Integra CF Medium file URL (.woff2)"
+    },
+    {
+      "type": "url",
+      "id": "font_bold_url",
+      "label": "Integra CF Bold file URL (.woff2)"
+    },
+    {
+      "type": "text",
+      "id": "fallback_font",
+      "label": "Fallback font stack",
+      "default": "Helvetica Neue, Arial, sans-serif"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "column_heading_color",
+      "label": "Logo & column heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text color",
+      "default": "#6d6d6d"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link color",
+      "default": "#6d6d6d"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Social icon color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider line color",
+      "default": "#e5e5e5"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "social_link",
+      "name": "Social icon",
+      "settings": [
+        {
+          "type": "select",
+          "id": "platform",
+          "label": "Platform",
+          "options": [
+            { "value": "twitter", "label": "Twitter / X" },
+            { "value": "facebook", "label": "Facebook" },
+            { "value": "instagram", "label": "Instagram" },
+            { "value": "youtube", "label": "YouTube" },
+            { "value": "tiktok", "label": "TikTok" },
+            { "value": "pinterest", "label": "Pinterest" },
+            { "value": "linkedin", "label": "LinkedIn" }
+          ],
+          "default": "twitter"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "footer_link",
+      "name": "Footer link",
+      "settings": [
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Column",
+          "options": [
+            { "value": "1", "label": "Column 1" },
+            { "value": "2", "label": "Column 2" },
+            { "value": "3", "label": "Column 3" },
+            { "value": "4", "label": "Column 4" }
+          ],
+          "default": "1"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Link text",
+          "default": "Link"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Site Footer",
+      "blocks": [
+        { "type": "social_link", "settings": { "platform": "twitter" } },
+        { "type": "social_link", "settings": { "platform": "facebook" } },
+        { "type": "social_link", "settings": { "platform": "instagram" } },
+        { "type": "social_link", "settings": { "platform": "youtube" } },
+        { "type": "footer_link", "settings": { "column": "1", "label": "About" } },
+        { "type": "footer_link", "settings": { "column": "1", "label": "Features" } },
+        { "type": "footer_link", "settings": { "column": "1", "label": "Works" } },
+        { "type": "footer_link", "settings": { "column": "1", "label": "Career" } },
+        { "type": "footer_link", "settings": { "column": "2", "label": "Customer Support" } },
+        { "type": "footer_link", "settings": { "column": "2", "label": "Delivery Details" } },
+        { "type": "footer_link", "settings": { "column": "2", "label": "Terms & Conditions" } },
+        { "type": "footer_link", "settings": { "column": "2", "label": "Privacy Policy" } },
+        { "type": "footer_link", "settings": { "column": "3", "label": "Account" } },
+        { "type": "footer_link", "settings": { "column": "3", "label": "Manage Deliveries" } },
+        { "type": "footer_link", "settings": { "column": "3", "label": "Orders" } },
+        { "type": "footer_link", "settings": { "column": "3", "label": "Payments" } },
+        { "type": "footer_link", "settings": { "column": "4", "label": "Free eBooks" } },
+        { "type": "footer_link", "settings": { "column": "4", "label": "Development Tutorial" } },
+        { "type": "footer_link", "settings": { "column": "4", "label": "How to - Blog" } },
+        { "type": "footer_link", "settings": { "column": "4", "label": "Youtube Playlist" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,159 @@
+
+
+  h1,h2,h3,h4,h5{
+    font-family:IntegralCFMed, sans-serif !important;
+  }
+
+  .hero-banner-{{ section.id }} {
+    --heading-size-desktop: {{ section.settings.heading_size_desktop }}px;
+    --heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
+    --subheading-size-desktop: {{ section.settings.subheading_size_desktop }}px;
+    --subheading-size-mobile: {{ section.settings.subheading_size_mobile }}px;
+    --stat-number-size-desktop: {{ section.settings.stat_number_size_desktop }}px;
+    --stat-number-size-mobile: {{ section.settings.stat_number_size_mobile }}px;
+    --bg-color: {{ section.settings.background_color }};
+    --heading-color: {{ section.settings.heading_color }};
+    --text-color: {{ section.settings.text_color }};
+    --button-bg: {{ section.settings.button_bg_color }};
+    --button-text: {{ section.settings.button_text_color }};
+  }
+
+  .hero-banner-{{ section.id }} {
+    background-color: var(--bg-color);
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .hero-banner-{{ section.id }} .hero-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .hero-banner-{{ section.id }} .hero-content {
+    flex: 1 1 480px;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 40px;
+    box-sizing: border-box;
+  }
+
+  .hero-banner-{{ section.id }} .hero-heading {
+    font-family: 'Integra CF', Arial, sans-serif;
+    font-weight: {{ section.settings.heading_font_weight }};
+    font-size: var(--heading-size-mobile);
+    line-height: 1.05;
+    text-transform: uppercase;
+    color: var(--heading-color);
+    margin: 0 0 20px 0;
+    letter-spacing: -0.5px;
+  }
+
+  .hero-banner-{{ section.id }} .hero-subheading {
+    font-family: 'Integra CF', Arial, sans-serif;
+    font-weight: 400;
+    font-size: var(--subheading-size-mobile);
+    line-height: 1.5;
+    color: var(--text-color);
+    max-width: 545px;
+    margin: 0 0 28px 0;
+  }
+
+  .hero-banner-{{ section.id }} .hero-button {
+    display: inline-block;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    font-family: 'Integra CF', Arial, sans-serif;
+    font-weight: {{ section.settings.button_font_weight }};
+    font-size: 16px;
+    padding: 16px 54px;
+    border-radius: 62px;
+    text-decoration: none;
+    text-align: center;
+    width: fit-content;
+    margin-bottom: 40px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .hero-banner-{{ section.id }} .hero-button:hover {
+    opacity: 0.85;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stat {
+    padding-right: 24px;
+    border-right: 1px solid #d9d9d9;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stat:last-child {
+    border-right: none;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stat-number {
+    font-family: 'Integra CF', Arial, sans-serif;
+    font-weight: 700;
+    font-size: var(--stat-number-size-mobile);
+    color: var(--heading-color);
+    margin: 0;
+    line-height: 1;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stat-label {
+    font-family: 'Integra CF', Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--text-color);
+    margin: 6px 0 0 0;
+  }
+
+  .hero-banner-{{ section.id }} .hero-image-wrapper {
+    flex: 1 1 480px;
+    min-width: 300px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-banner-{{ section.id }} .hero-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media screen and (min-width: 768px) {
+    .hero-banner-{{ section.id }} .hero-heading {
+      font-size: var(--heading-size-desktop);
+    }
+    .hero-banner-{{ section.id }} .hero-subheading {
+      font-size: var(--subheading-size-desktop);
+    }
+    .hero-banner-{{ section.id }} .hero-stat-number {
+      font-size: var(--stat-number-size-desktop);
+    }
+    .hero-banner-{{ section.id }} .hero-content {
+      padding: 64px 80px;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .hero-banner-{{ section.id }} .hero-image-wrapper {
+      min-height: 320px;
+    }
+    .hero-banner-{{ section.id }} .hero-stats {
+      gap: 16px;
+    }
+    .hero-banner-{{ section.id }} .hero-stat {
+      padding-right: 16px;
+    }
+  }

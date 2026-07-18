@@ -1,0 +1,109 @@
+.bds-wrapper {
+  padding: 48px 5vw;
+}
+
+.bds-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px;
+  border-radius: 24px;
+}
+
+.bds-heading {
+  text-align: center;
+  margin: 0 0 32px;
+}
+
+.bds-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  grid-template-rows: 260px 260px;
+  gap: 20px;
+}
+
+/* Row 1: Casual (narrow) | Formal (wide) */
+.bds-tile:nth-child(1) { grid-column: 1; grid-row: 1; }
+.bds-tile:nth-child(2) { grid-column: 2; grid-row: 1; }
+
+/* Row 2: Party (wide) | Gym (narrow) — mirrors row 1 */
+.bds-tile:nth-child(3) { grid-column: 1 / span 1; grid-row: 2; }
+.bds-tile:nth-child(4) { grid-column: 2 / span 1; grid-row: 2; }
+
+.bds-tile {
+  position: relative;
+  display: block;
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  background-color: #ffffff;
+}
+
+.bds-tile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.bds-tile:hover .bds-tile-image {
+  transform: scale(1.04);
+}
+
+.bds-placeholder {
+  opacity: 0.35;
+}
+
+.bds-label {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+/* ---------- Tablet ---------- */
+@media screen and (max-width: 989px) {
+  .bds-inner {
+    padding: 28px;
+  }
+
+  .bds-grid {
+    grid-template-rows: 220px 220px;
+  }
+}
+
+/* ---------- Mobile ---------- */
+@media screen and (max-width: 749px) {
+  .bds-wrapper {
+    padding: 32px 5vw;
+  }
+
+  .bds-inner {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .bds-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 200px);
+  }
+
+  .bds-tile:nth-child(1),
+  .bds-tile:nth-child(2),
+  .bds-tile:nth-child(3),
+  .bds-tile:nth-child(4) {
+    grid-column: 1;
+  }
+
+  .bds-tile:nth-child(1) { grid-row: 1; }
+  .bds-tile:nth-child(2) { grid-row: 2; }
+  .bds-tile:nth-child(3) { grid-row: 3; }
+  .bds-tile:nth-child(4) { grid-row: 4; }
+
+  .bds-label {
+    top: 14px;
+    left: 14px;
+    padding: 5px 12px;
+  }
+}

@@ -1,0 +1,191 @@
+<style>
+  .brand-logos-{{ section.id }} {
+    background-color: {{ section.settings.background_color }};
+    width: 100%;
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+    box-sizing: border-box;
+  }
+
+  .brand-logos-{{ section.id }} .brand-logos-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .brand-logos-{{ section.id }} .brand-logo-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 120px;
+    max-width: 180px;
+  }
+
+  .brand-logos-{{ section.id }} .brand-logo-item img {
+    width: 100%;
+    height: auto;
+    max-height: {{ section.settings.logo_height }}px;
+    object-fit: contain;
+    display: block;
+    filter: {{ section.settings.logo_color_filter }};
+  }
+
+  .brand-logos-{{ section.id }} .brand-logo-item .brand-logo-text {
+    font-family: 'Integra CF', Arial, sans-serif;
+    font-weight: 700;
+    font-size: {{ section.settings.text_logo_size }}px;
+    color: {{ section.settings.text_logo_color }};
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  @media screen and (max-width: 749px) {
+    .brand-logos-{{ section.id }} .brand-logos-inner {
+      justify-content: center;
+      gap: 28px;
+    }
+    .brand-logos-{{ section.id }} .brand-logo-item {
+      flex: 1 1 90px;
+      max-width: 120px;
+    }
+    .brand-logos-{{ section.id }} .brand-logo-item img {
+      max-height: {{ section.settings.logo_height | times: 0.7 | round }}px;
+    }
+    .brand-logos-{{ section.id }} .brand-logo-item .brand-logo-text {
+      font-size: {{ section.settings.text_logo_size | times: 0.75 | round }}px;
+    }
+  }
+</style>
+
+<section class="brand-logos-{{ section.id }}">
+  <div class="brand-logos-inner">
+    {% for block in section.blocks %}
+      {% if block.type == 'logo' %}
+        <div class="brand-logo-item" {{ block.shopify_attributes }}>
+          {% if block.settings.logo_image != blank %}
+            <img
+              src="{{ block.settings.logo_image | image_url: width: 400 }}"
+              alt="{{ block.settings.logo_alt | default: block.settings.brand_name }}"
+              loading="lazy"
+              width=""
+              height=""
+            >
+          {% else %}
+            <span class="brand-logo-text">{{ block.settings.brand_name }}</span>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand Logos",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_logo_color",
+      "label": "Text logo color (used when no image)",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "select",
+      "id": "logo_color_filter",
+      "label": "Image logo color",
+      "options": [
+        { "value": "none", "label": "Original" },
+        { "value": "brightness(0) invert(1)", "label": "Force white" },
+        { "value": "brightness(0)", "label": "Force black" }
+      ],
+      "default": "brightness(0) invert(1)"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo height (desktop)",
+      "min": 20,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "text_logo_size",
+      "label": "Text logo font size (desktop)",
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Brand logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo_image",
+          "label": "Logo image (leave blank to use text logo instead)"
+        },
+        {
+          "type": "text",
+          "id": "brand_name",
+          "label": "Brand name (used as text logo / alt text)",
+          "default": "VERSACE"
+        },
+        {
+          "type": "text",
+          "id": "logo_alt",
+          "label": "Image alt text (optional)"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Brand Logos",
+      "blocks": [
+        { "type": "logo", "settings": { "brand_name": "VERSACE" } },
+        { "type": "logo", "settings": { "brand_name": "ZARA" } },
+        { "type": "logo", "settings": { "brand_name": "GUCCI" } },
+        { "type": "logo", "settings": { "brand_name": "PRADA" } },
+        { "type": "logo", "settings": { "brand_name": "Calvin Klein" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

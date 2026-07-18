@@ -1,0 +1,485 @@
+{% comment %}
+  Section: Product Tabs (Product Details / Rating & Reviews / FAQs)
+  - Add exactly 3 "Tab label" blocks to control the tab button text.
+    Their order sets the button order, but content panels are wired to
+    fixed positions: 1st = Product Details, 2nd = Reviews, 3rd = FAQs.
+  - Add repeatable "Review" blocks and "FAQ" blocks to populate those
+    two panels — reorder/add/remove them freely in the customizer.
+{% endcomment %}
+
+{{ 'custom-product-page.css' | asset_url | stylesheet_tag }}
+
+<style>
+  @font-face {
+    font-family: 'Integra CF';
+    src: url('{{ "IntegraCF-Medium.woff2" | asset_url }}') format('woff2');
+    font-weight: 500;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Integra CF';
+    src: url('{{ "IntegraCF-Bold.woff2" | asset_url }}') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Satoshi';
+    src: url('{{ "Satoshi-Regular.woff2" | asset_url }}') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Satoshi';
+    src: url('{{ "Satoshi-Medium.woff2" | asset_url }}') format('woff2');
+    font-weight: 500;
+    font-display: swap;
+  }
+
+  #shopify-section-{{ section.id }} {
+    --cpp-heading-font: 'Integra CF', 'Helvetica Neue', Arial, sans-serif;
+    --cpp-heading-weight: {{ section.settings.heading_font_weight }};
+    --cpp-body-font: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+    --cpp-desc-size: {{ section.settings.description_font_size }}px;
+    --cpp-subheading-size: {{ section.settings.subheading_font_size }}px;
+    --cpp-section-heading-size: {{ section.settings.section_heading_size }}px;
+    --cpp-review-text-size: {{ section.settings.review_text_font_size }}px;
+    --cpp-accent: {{ section.settings.accent_color }};
+    --cpp-text: {{ section.settings.text_color }};
+    --cpp-muted: {{ section.settings.muted_color }};
+    --cpp-border: {{ section.settings.border_color }};
+    background: {{ section.settings.background_color }};
+    font-family: var(--cpp-body-font);
+    color: var(--cpp-text);
+  }
+</style>
+
+<div class="cpp-wrapper" id="shopify-section-{{ section.id }}">
+  <div class="cpp-tabs-wrapper">
+    <div class="cpp-tabs-nav" role="tablist">
+      {% for block in section.blocks %}
+        {% if block.type == 'tab_label' %}
+          <button
+            type="button"
+            class="cpp-tab-btn{% if forloop.first %} is-active{% endif %}"
+            role="tab"
+            data-cpp-tab-btn
+            data-target="cpp-panel-{{ forloop.index }}-{{ section.id }}"
+          >{{ block.settings.label }}</button>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Panel 1: Product Details -->
+    <div class="cpp-tab-panel is-active" id="cpp-panel-1-{{ section.id }}" data-cpp-panel>
+      {% for block in section.blocks %}
+        {% if block.type == 'product_detail' %}
+          <div class="cpp-rich-text">{{ block.settings.content }}</div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Panel 2: Rating & Reviews -->
+    <div class="cpp-tab-panel" id="cpp-panel-2-{{ section.id }}" data-cpp-panel hidden>
+      {% assign review_blocks = section.blocks | where: 'type', 'review' %}
+      <div class="cpp-reviews-header">
+        <h2 class="cpp-section-heading">All Reviews <span class="cpp-muted">({{ section.settings.review_count | default: review_blocks.size }})</span></h2>
+        <div class="cpp-reviews-controls">
+          <button type="button" class="cpp-icon-btn" aria-label="Filter reviews">⚙︎</button>
+          <select class="cpp-sort-select" aria-label="Sort reviews">
+            <option>Latest</option>
+            <option>Oldest</option>
+            <option>Highest Rated</option>
+            <option>Lowest Rated</option>
+          </select>
+          <button type="button" class="cpp-write-review-btn">Write a Review</button>
+        </div>
+      </div>
+
+      <div class="cpp-reviews-grid">
+        {% for block in review_blocks %}
+          <div class="cpp-review-card" {{ block.shopify_attributes }}>
+            <div class="cpp-review-top">
+              <span class="cpp-review-stars" aria-hidden="true">
+                {% for i in (1..5) %}{% if i <= block.settings.rating %}★{% else %}☆{% endif %}{% endfor %}
+              </span>
+              <button type="button" class="cpp-review-more" aria-label="More options">•••</button>
+            </div>
+            <p class="cpp-review-name">
+              {{ block.settings.reviewer_name }}
+              {% if block.settings.verified %}<span class="cpp-verified" title="Verified buyer">✓</span>{% endif %}
+            </p>
+            <p class="cpp-review-text">&ldquo;{{ block.settings.review_text }}&rdquo;</p>
+            <p class="cpp-review-date">Posted on {{ block.settings.review_date }}</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if section.settings.show_load_more %}
+        <div class="cpp-load-more-row">
+          <button type="button" class="cpp-load-more-btn">Load More Reviews</button>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Panel 3: FAQs -->
+    <div class="cpp-tab-panel" id="cpp-panel-3-{{ section.id }}" data-cpp-panel hidden>
+      {% assign faq_blocks = section.blocks | where: 'type', 'faq' %}
+      <div class="cpp-faq-list">
+        {% for block in faq_blocks %}
+          <div class="cpp-faq-item" {{ block.shopify_attributes }}>
+            <button type="button" class="cpp-faq-question" data-cpp-faq-toggle>
+              <span>{{ block.settings.question }}</span>
+              <span class="cpp-faq-icon">+</span>
+            </button>
+            <div class="cpp-faq-answer">
+              <p>{{ block.settings.answer }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.getElementById('shopify-section-{{ section.id }}');
+    if (!root) return;
+
+    // Tabs
+    var tabBtns = root.querySelectorAll('[data-cpp-tab-btn]');
+    var panels = root.querySelectorAll('[data-cpp-panel]');
+    tabBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        tabBtns.forEach(function (b) { b.classList.remove('is-active'); });
+        panels.forEach(function (p) {
+          p.classList.remove('is-active');
+          p.hidden = true;
+        });
+        btn.classList.add('is-active');
+        var target = document.getElementById(btn.getAttribute('data-target'));
+        if (target) {
+          target.hidden = false;
+          target.classList.add('is-active');
+        }
+      });
+    });
+
+    // FAQ accordion
+    root.querySelectorAll('[data-cpp-faq-toggle]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var item = btn.closest('.cpp-faq-item');
+        item.classList.toggle('is-open');
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product Tabs",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading font weight (Integra CF)",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "section_heading_size",
+      "label": "Section heading font size (e.g. All Reviews)",
+      "min": 18,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "subheading_font_size",
+      "label": "Subheading / tab label font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "description_font_size",
+      "label": "Body text font size (product details, FAQ answers)",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "review_text_font_size",
+      "label": "Review text font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text color",
+      "default": "#8b8b8b"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (buttons)",
+      "default": "#0f0f0f"
+    },
+    {
+      "type": "header",
+      "content": "Reviews tab"
+    },
+    {
+      "type": "number",
+      "id": "review_count",
+      "label": "Total review count shown in heading (e.g. 451)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_load_more",
+      "label": "Show \"Load More Reviews\" button",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab_label",
+      "name": "Tab label",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tab name",
+          "default": "Product Details"
+        }
+      ]
+    },
+    {
+      "type": "product_detail",
+      "name": "Product Details content",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Product details text",
+          "default": "<p>This graphic t-shirt is perfect for any occasion. Crafted from a soft and breathable 100% combed cotton, it offers superior comfort and everyday style. Regular fit, ribbed crew neck, and a durable screen-printed graphic that won't crack or fade after washing.</p><p><strong>Fabric:</strong> 100% combed cotton, 220gsm<br><strong>Fit:</strong> Regular / true to size<br><strong>Care:</strong> Machine wash cold, tumble dry low</p>"
+        }
+      ]
+    },
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "text",
+          "id": "reviewer_name",
+          "label": "Reviewer name",
+          "default": "Samantha D."
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Verified buyer badge",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Star rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review text",
+          "default": "I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt."
+        },
+        {
+          "type": "text",
+          "id": "review_date",
+          "label": "Date text",
+          "default": "August 14, 2023"
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What size should I order?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "This t-shirt fits true to size with a relaxed, regular cut. If you prefer an oversized look, we recommend sizing up."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Tabs",
+      "blocks": [
+        { "type": "tab_label", "settings": { "label": "Product Details" } },
+        { "type": "tab_label", "settings": { "label": "Rating & Reviews" } },
+        { "type": "tab_label", "settings": { "label": "FAQs" } },
+        { "type": "product_detail" },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Samantha D.",
+            "verified": true,
+            "rating": 5,
+            "review_text": "I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt.",
+            "review_date": "August 14, 2023"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Alex M.",
+            "verified": true,
+            "rating": 5,
+            "review_text": "The t-shirt exceeded my expectations! The colors are vibrant and the print quality is top-notch. Being a UI/UX designer myself, I'm quite picky about aesthetics, and this shirt definitely gets a thumbs up.",
+            "review_date": "August 15, 2023"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ethan R.",
+            "verified": true,
+            "rating": 4,
+            "review_text": "This t-shirt is a must-have for anyone who appreciates good design. The minimalistic yet stylish pattern caught my eye, and the fit is perfect. I can see the attention to detail in every aspect of this shirt.",
+            "review_date": "August 16, 2023"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Olivia P.",
+            "verified": true,
+            "rating": 5,
+            "review_text": "As a design enthusiast, I value simplicity and functionality. This t-shirt not only represents those principles but also feels great to wear. It's evident that real creativity went into making it stand out.",
+            "review_date": "August 17, 2023"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Liam K.",
+            "verified": true,
+            "rating": 4,
+            "review_text": "This t-shirt is a fusion of comfort and creativity. The fabric is soft, and the design speaks volumes about skill. It's like wearing a piece of art that reflects a passion for both design and fashion.",
+            "review_date": "August 18, 2023"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Ava H.",
+            "verified": true,
+            "rating": 5,
+            "review_text": "I'm not just wearing a t-shirt; I'm wearing a piece of design philosophy. The intricate details and thoughtful layout of the design make this shirt a real conversation starter.",
+            "review_date": "August 19, 2023"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What size should I order?",
+            "answer": "This t-shirt fits true to size with a relaxed, regular cut. If you prefer an oversized look, we recommend sizing up."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What material is this shirt made from?",
+            "answer": "It's made from 100% combed cotton at 220gsm for a soft hand-feel and long-lasting shape."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How do I wash this shirt without cracking the print?",
+            "answer": "Wash cold, inside out, and tumble dry on low or hang dry. Avoid ironing directly over the printed graphic."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Do the colors shown match the actual product?",
+            "answer": "We calibrate our product photography to be as accurate as possible, but slight variations can occur depending on your screen settings."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "Unworn items with tags attached can be returned within 30 days of delivery for a full refund."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "Standard shipping takes 3 to 7 business days depending on your location. Express options are available at checkout."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

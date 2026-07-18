@@ -1,0 +1,263 @@
+{{ 'browse-by-dress-style.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --bds-bg: {{ section.settings.section_background }};
+    --bds-heading-color: {{ section.settings.heading_color }};
+    --bds-label-color: {{ section.settings.label_color }};
+    --bds-label-bg: {{ section.settings.label_background }};
+  }
+
+  {%- if section.settings.font_medium_url != blank -%}
+    @font-face {
+      font-family: 'Integra CF';
+      src: url('{{ section.settings.font_medium_url }}') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+  {%- endif -%}
+
+  {%- if section.settings.font_bold_url != blank -%}
+    @font-face {
+      font-family: 'Integra CF';
+      src: url('{{ section.settings.font_bold_url }}') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .bds-font {
+    font-family: {% if section.settings.font_medium_url != blank or section.settings.font_bold_url != blank %}'Integra CF',{% endif %} {{ section.settings.fallback_font }};
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .bds-heading {
+      font-size: {{ section.settings.heading_size_mobile }}px !important;
+    }
+    #shopify-section-{{ section.id }} .bds-label {
+      font-size: {{ section.settings.label_size_mobile }}px !important;
+    }
+  }
+{%- endstyle -%}
+
+<div class="bds-wrapper" style="background-color: var(--bds-bg);">
+  <div class="bds-inner">
+    {%- if section.settings.heading != blank -%}
+      <h2
+        class="bds-font bds-heading"
+        style="
+          color: var(--bds-heading-color);
+          font-size: {{ section.settings.heading_size_desktop }}px;
+          font-weight: {{ section.settings.heading_font_weight }};
+        "
+      >
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    <div class="bds-grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'style_item' -%}
+          <a
+            href="{{ block.settings.link | default: '#' }}"
+            class="bds-tile"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.image != blank -%}
+              {{
+                block.settings.image
+                | image_url: width: 1200
+                | image_tag:
+                  loading: 'lazy',
+                  sizes: '(min-width: 750px) 45vw, 90vw',
+                  widths: '400,600,900,1200',
+                  class: 'bds-tile-image',
+                  alt: block.settings.label
+              }}
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'bds-tile-image bds-placeholder' }}
+            {%- endif -%}
+
+            <span
+              class="bds-font bds-label"
+              style="
+                color: var(--bds-label-color);
+                background-color: var(--bds-label-bg);
+                font-size: {{ section.settings.label_size_desktop }}px;
+                font-weight: {{ section.settings.label_font_weight }};
+              "
+            >
+              {{ block.settings.label }}
+            </span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Browse by Dress Style",
+  "tag": "section",
+  "class": "section-browse-by-dress-style",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Custom font (Integra CF)"
+    },
+    {
+      "type": "url",
+      "id": "font_medium_url",
+      "label": "Integra CF Medium file URL (.woff2)"
+    },
+    {
+      "type": "url",
+      "id": "font_bold_url",
+      "label": "Integra CF Bold file URL (.woff2)"
+    },
+    {
+      "type": "text",
+      "id": "fallback_font",
+      "label": "Fallback font stack",
+      "default": "Helvetica Neue, Arial, sans-serif"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading text",
+      "default": "BROWSE BY DRESS STYLE"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size — desktop (px)",
+      "min": 18,
+      "max": 60,
+      "step": 1,
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size — mobile (px)",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Tile labels"
+    },
+    {
+      "type": "select",
+      "id": "label_font_weight",
+      "label": "Label weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "label_size_desktop",
+      "label": "Label size — desktop (px)",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "label_size_mobile",
+      "label": "Label size — mobile (px)",
+      "min": 12,
+      "max": 30,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Section background",
+      "default": "#f2f0f1"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "label_background",
+      "label": "Label background (behind the text)",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "style_item",
+      "name": "Style tile",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Casual"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Browse by Dress Style",
+      "blocks": [
+        { "type": "style_item", "settings": { "label": "Casual" } },
+        { "type": "style_item", "settings": { "label": "Formal" } },
+        { "type": "style_item", "settings": { "label": "Party" } },
+        { "type": "style_item", "settings": { "label": "Gym" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

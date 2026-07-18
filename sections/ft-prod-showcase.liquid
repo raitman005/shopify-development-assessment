@@ -1,0 +1,351 @@
+{{ 'ft-prod-showcase.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  /*
+    IMPORTANT — CUSTOM FONT SETUP (Integra CF)
+    Integra CF is not a Shopify default font, so it can't be picked from the
+    theme font-picker. To use it:
+      1. Upload IntegraCF-Medium.woff2 and IntegraCF-Bold.woff2 to
+         Settings > Files (or the theme's Assets folder).
+      2. Paste the file URLs into the two "Custom font URL" settings for
+         this section in the theme customizer.
+    Until those URLs are filled in, the section falls back to the theme's
+    default sans-serif font automatically — nothing will break.
+  */
+  #shopify-section-{{ section.id }} {
+    --fps-heading-color: {{ section.settings.heading_color }};
+    --fps-text-color: {{ section.settings.text_color }};
+    --fps-price-color: {{ section.settings.price_color }};
+    --fps-sale-color: {{ section.settings.sale_badge_color }};
+    --fps-card-bg: {{ section.settings.card_background }};
+    --fps-section-bg: {{ section.settings.section_background }};
+    --fps-star-color: {{ section.settings.star_color }};
+  }
+
+  {%- if section.settings.font_medium_url != blank -%}
+    @font-face {
+      font-family: 'Integra CF';
+      src: url('{{ section.settings.font_medium_url }}') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+  {%- endif -%}
+
+  {%- if section.settings.font_bold_url != blank -%}
+    @font-face {
+      font-family: 'Integra CF';
+      src: url('{{ section.settings.font_bold_url }}') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .fps-font {
+    font-family: {% if section.settings.font_medium_url != blank or section.settings.font_bold_url != blank %}'Integra CF',{% endif %} {{ section.settings.fallback_font }};
+  }
+
+  /* Editable mobile heading size, set per-instance via the theme customizer */
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .fps-heading {
+      font-size: {{ section.settings.heading_size_mobile }}px !important;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign namespace = section.settings.rating_namespace
+  assign rating_key = section.settings.rating_key
+  assign rating_count_key = section.settings.rating_count_key
+  if section.settings.source_type == 'collection' and section.settings.collection != blank
+    assign source_collection = section.settings.collection
+    assign products = source_collection.products 
+    assign fallback_view_all_url = source_collection.url
+  else
+    assign products = section.settings.products
+    assign fallback_view_all_url = blank
+  endif
+  
+
+  assign view_all_url = section.settings.view_all_url | default: fallback_view_all_url
+-%}
+{% comment %} if section.settings.source_type == 'collection' and section.settings.collection != blank
+    assign source_collection = section.settings.collection
+    collections[section.settings.collection]
+    assign products = source_collection.products | slice: 0, section.settings.max_products
+    assign fallback_view_all_url = source_collection.url
+  else
+    assign products = section.settings.products | slice: 0, section.settings.max_products
+    assign fallback_view_all_url = blank
+  endif {% endcomment %}
+<div class="fps-wrapper" style="background-color: var(--fps-section-bg);">
+  <div class="fps-group">
+
+    {%- if section.settings.heading != blank -%}
+      <h2
+        class="fps-font fps-heading"
+        style="
+          color: var(--fps-heading-color);
+          font-size: {{ section.settings.heading_size_desktop }}px;
+          font-weight: {{ section.settings.heading_font_weight }};
+        "
+      >
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    {%- if products.size > 0 -%}
+      <div class="fps-grid">
+        {%- for product in products -%}
+          {%- render 'fps-product-card',
+            product: product,
+            namespace: namespace,
+            rating_key: rating_key,
+            rating_count_key: rating_count_key,
+            show_rating: section.settings.show_rating,
+            fallback_rating: section.settings.fallback_rating,
+            show_fallback_rating: section.settings.show_fallback_rating
+          -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="fps-empty-state">
+        {%- if section.settings.source_type == 'collection' -%}
+          Pick a collection above to show its products here.
+        {%- else -%}
+          Add products above to show them here.
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if view_all_url != blank -%}
+      <div class="fps-view-all-wrap">
+        <a href="{{ view_all_url }}" class="fps-font fps-view-all-btn">
+          {{ section.settings.view_all_text }}
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FeatProd Section",
+  "tag": "section",
+  "class": "section-featured-products-showcase",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content source"
+    },
+    {
+      "type": "paragraph",
+      "content": "Choose ONE product source. This section shows a single group at a time — set it up as New Arrivals or Top Selling by picking the matching collection/products and heading below."
+    },
+    {
+      "type": "select",
+      "id": "source_type",
+      "label": "Show products from",
+      "options": [
+        { "value": "collection", "label": "A collection (e.g. sorted Newest or Best-selling)" },
+        { "value": "manual", "label": "Hand-picked product list" }
+      ],
+      "default": "collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Tip: for \"New Arrivals\" use a collection sorted by Date (newest first) in Shopify admin. For \"Top Selling\" sort it by Best selling."
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Products (used if source is \"Hand-picked product list\")",
+      "limit": 12
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Number of products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "NEW ARRIVALS"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size — desktop (px)",
+      "min": 18,
+      "max": 60,
+      "step": 1,
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size — mobile (px)",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "\"View All\" button"
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "Button text",
+      "default": "View All"
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "Button link (leave blank to auto-use the collection link)"
+    },
+    {
+      "type": "header",
+      "content": "Ratings"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shopify has no native star rating. This pulls the rating from a product metafield, which is how review apps (Shopify Product Reviews, Judge.me, Loox, etc.) store their data. Defaults below match the most common setup — check your reviews app's metafield names if stars don't appear."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show star ratings",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "rating_namespace",
+      "label": "Rating metafield namespace",
+      "default": "reviews"
+    },
+    {
+      "type": "text",
+      "id": "rating_key",
+      "label": "Rating metafield key",
+      "default": "rating"
+    },
+    {
+      "type": "text",
+      "id": "rating_count_key",
+      "label": "Rating count metafield key",
+      "default": "rating_count"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_fallback_rating",
+      "label": "Show a placeholder rating for products with no reviews yet",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "fallback_rating",
+      "label": "Placeholder rating",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Custom font (Integra CF)"
+    },
+    {
+      "type": "url",
+      "id": "font_medium_url",
+      "label": "Integra CF Medium file URL (.woff2)"
+    },
+    {
+      "type": "url",
+      "id": "font_bold_url",
+      "label": "Integra CF Bold file URL (.woff2)"
+    },
+    {
+      "type": "text",
+      "id": "fallback_font",
+      "label": "Fallback font stack",
+      "default": "Helvetica Neue, Arial, sans-serif"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card image background",
+      "default": "#f2f0f1"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Product title color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "sale_badge_color",
+      "label": "Sale badge color",
+      "default": "#ff3333"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star rating color",
+      "default": "#ffc633"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FeatProd Sections"
+    }
+  ]
+}
+{% endschema %}

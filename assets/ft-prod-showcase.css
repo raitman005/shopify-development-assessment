@@ -1,0 +1,169 @@
+.fps-wrapper {
+  padding: 48px 5vw;
+}
+
+.fps-group {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.fps-heading {
+  text-align: center;
+  margin: 0 0 32px;
+  letter-spacing: 0.01em;
+}
+
+.fps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.fps-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.fps-card-image-wrap {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fps-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.fps-placeholder {
+  width: 60%;
+  height: 60%;
+  opacity: 0.4;
+}
+
+.fps-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.fps-card-info {
+  margin-top: 12px;
+}
+
+.fps-card-title {
+  font-size: 16px;
+  margin: 0 0 6px;
+  font-weight: 500;
+}
+
+.fps-rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.fps-stars {
+  color: var(--fps-star-color);
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.fps-rating-label {
+  font-size: 13px;
+  color: #6d6d6d;
+}
+
+.fps-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.fps-price {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.fps-compare-price {
+  font-size: 15px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.fps-view-all-wrap {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.fps-view-all-btn {
+  display: inline-block;
+  padding: 12px 40px;
+  border: 1px solid #000;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #000;
+  font-size: 14px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.fps-view-all-btn:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.fps-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #8a8a8a;
+  font-size: 14px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 12px;
+}
+
+/* ---------- Tablet ---------- */
+@media screen and (max-width: 989px) {
+  .fps-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* ---------- Mobile ---------- */
+@media screen and (max-width: 749px) {
+  .fps-wrapper {
+    padding: 32px 5vw;
+  }
+
+  .fps-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .fps-card-title {
+    font-size: 14px;
+  }
+
+  .fps-price {
+    font-size: 15px;
+  }
+
+  .fps-view-all-btn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+}

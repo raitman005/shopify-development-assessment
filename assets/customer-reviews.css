@@ -1,0 +1,132 @@
+.cr-wrapper {
+  padding: 48px 5vw;
+}
+
+.cr-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.cr-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.cr-heading {
+  margin: 0;
+}
+
+.cr-nav-arrows {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.cr-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--cr-arrow-bg);
+  color: var(--cr-arrow-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.cr-arrow:hover {
+  opacity: 0.7;
+}
+
+.cr-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (var(--cr-cards-desktop) - 1) * 24px) / var(--cr-cards-desktop));
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding-bottom: 4px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.cr-track::-webkit-scrollbar {
+  display: none;
+}
+
+.cr-card {
+  scroll-snap-align: start;
+  border: 1px solid var(--cr-card-border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.cr-stars {
+  color: var(--cr-star-color);
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+.cr-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cr-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cr-verified {
+  display: inline-flex;
+  align-items: center;
+}
+
+.cr-review-text {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ---------- Tablet ---------- */
+@media screen and (max-width: 989px) {
+  .cr-track {
+    grid-auto-columns: calc((100% - (var(--cr-cards-tablet) - 1) * 18px) / var(--cr-cards-tablet));
+    gap: 18px;
+  }
+}
+
+/* ---------- Mobile ---------- */
+@media screen and (max-width: 749px) {
+  .cr-wrapper {
+    padding: 32px 5vw;
+  }
+
+  .cr-top-row {
+    margin-bottom: 20px;
+  }
+
+  .cr-track {
+    grid-auto-columns: 100%;
+    gap: 14px;
+  }
+
+  .cr-card {
+    padding: 18px;
+  }
+
+  .cr-arrow {
+    width: 38px;
+    height: 38px;
+  }
+}

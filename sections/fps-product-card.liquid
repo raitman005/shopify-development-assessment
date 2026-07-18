@@ -1,0 +1,69 @@
+{%- liquid
+  assign full_stars = block.settings.rating | floor
+  assign has_half_star = false
+  assign remainder = block.settings.rating | minus: full_stars
+  if remainder >= 0.25 and remainder < 0.75
+    assign has_half_star = true
+  elsif remainder >= 0.75
+    assign full_stars = full_stars | plus: 1
+  endif
+  assign empty_stars = 5 | minus: full_stars
+  if has_half_star
+    assign empty_stars = empty_stars | minus: 1
+  endif
+-%}
+
+<a
+  href="{{ block.settings.link | default: '#' }}"
+  class="fps-card"
+  {{ block.shopify_attributes }}
+>
+  <div class="fps-card-image-wrap" style="background-color: var(--fps-card-bg);">
+    {%- if block.settings.image != blank -%}
+      {{
+        block.settings.image
+        | image_url: width: 800
+        | image_tag:
+          loading: 'lazy',
+          sizes: '(min-width: 990px) 22vw, (min-width: 750px) 45vw, 90vw',
+          widths: '200,400,600,800',
+          class: 'fps-card-image',
+          alt: block.settings.title
+      }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'fps-card-image fps-placeholder' }}
+    {%- endif -%}
+
+    {%- if block.settings.badge_text != blank -%}
+      <span class="fps-badge" style="background-color: var(--fps-sale-color);">
+        {{ block.settings.badge_text }}
+      </span>
+    {%- endif -%}
+  </div>
+
+  <div class="fps-card-info">
+    <p class="fps-font fps-card-title" style="color: var(--fps-text-color);">
+      {{ block.settings.title }}
+    </p>
+
+    {%- if block.settings.rating_label != blank -%}
+      <div class="fps-rating">
+        <span class="fps-stars" aria-hidden="true">
+          {%- for i in (1..full_stars) -%}★{%- endfor -%}
+          {%- if has_half_star -%}⯨{%- endif -%}
+          {%- for i in (1..empty_stars) -%}☆{%- endfor -%}
+        </span>
+        <span class="fps-font fps-rating-label">{{ block.settings.rating_label }}</span>
+      </div>
+    {%- endif -%}
+
+    <div class="fps-price-row">
+      <span class="fps-font fps-price" style="color: var(--fps-price-color);">
+        {{ block.settings.price }}
+      </span>
+      {%- if block.settings.compare_at_price != blank -%}
+        <span class="fps-font fps-compare-price">{{ block.settings.compare_at_price }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</a>

@@ -1,0 +1,153 @@
+.ftr-wrapper {
+  padding: 48px 5vw 24px;
+}
+
+.ftr-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.ftr-top {
+  display: grid;
+  grid-template-columns: 1.4fr 2fr;
+  gap: 40px;
+  margin-bottom: 32px;
+}
+
+.ftr-logo {
+  font-size: 26px;
+  margin: 0 0 16px;
+  letter-spacing: 0.02em;
+}
+
+.ftr-description {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 20px;
+  max-width: 300px;
+}
+
+.ftr-socials {
+  display: flex;
+  gap: 10px;
+}
+
+.ftr-social-icon {
+  width: 34px;
+  height: 34px;
+  border: 1px solid;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.ftr-social-icon:hover {
+  opacity: 0.65;
+}
+
+.ftr-columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.ftr-column-title {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  margin: 0 0 18px;
+}
+
+.ftr-link-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ftr-link {
+  font-size: 14px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.ftr-link:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.ftr-divider {
+  border-top: 1px solid;
+  margin-bottom: 20px;
+}
+
+.ftr-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.ftr-copyright {
+  font-size: 13px;
+  margin: 0;
+}
+
+.ftr-payment-icons {
+  list-style: none;
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.ftr-payment-icon {
+  height: 24px;
+  width: auto;
+  display: block;
+}
+
+/* ---------- Tablet ---------- */
+@media screen and (max-width: 989px) {
+  .ftr-top {
+    grid-template-columns: 1fr;
+  }
+
+  .ftr-columns {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 32px;
+  }
+
+  .ftr-description {
+    max-width: 100%;
+  }
+}
+
+/* ---------- Mobile ---------- */
+@media screen and (max-width: 749px) {
+  .ftr-wrapper {
+    padding: 32px 5vw 20px;
+  }
+
+  .ftr-columns {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    row-gap: 28px;
+  }
+
+  .ftr-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .ftr-columns {
+    grid-template-columns: 1fr 1fr;
+  }
+}

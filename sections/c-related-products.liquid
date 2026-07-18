@@ -1,0 +1,133 @@
+{% comment %}
+  Section: You Might Also Like
+  Add "Related product" blocks (up to 4 recommended) via the product
+  picker in Theme Customize.
+{% endcomment %}
+
+{{ 'custom-product-page.css' | asset_url | stylesheet_tag }}
+
+<style>
+
+  #shopify-section-{{ section.id }} {
+    --cpp-heading-font: 'IntegralCF', 'Helvetica Neue', Arial, sans-serif;
+    --cpp-heading-weight: {{ section.settings.heading_font_weight }};
+    --cpp-body-font: 'Satoshi Variable', -apple-system, BlinkMacSystemFont, sans-serif;
+    --cpp-section-heading-size: {{ section.settings.heading_font_size }}px;
+    --cpp-text: {{ section.settings.text_color }};
+    --cpp-muted: {{ section.settings.muted_color }};
+    background: {{ section.settings.background_color }};
+    font-family: var(--cpp-body-font);
+    color: var(--cpp-text);
+  }
+</style>
+
+<div class="cpp-wrapper" id="shopify-section-{{ section.id }}">
+  {% assign related_blocks = section.blocks | where: 'type', 'related_product' %}
+  {% if related_blocks.size > 0 %}
+    <div class="cpp-related">
+      <h2 class="cpp-related-heading">{{ section.settings.related_heading | default: 'You Might Also Like' }}</h2>
+      <div class="cpp-related-grid">
+        {% for block in related_blocks %}
+          {% assign related_product = block.settings.product %}
+          {% if related_product != blank %}
+            <a href="{{ related_product.url }}" class="cpp-related-card" {{ block.shopify_attributes }}>
+              <div class="cpp-related-image">
+                <img src="{{ related_product.featured_image | image_url: width: 500 }}" width="" height="" alt="{{ related_product.title | escape }}" loading="lazy">
+              </div>
+              <p class="cpp-related-title">{{ related_product.title }}</p>
+              <p class="cpp-related-price">{{ related_product.price | money }}</p>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "You Might Also Like",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading font weight (Integra CF)",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Section heading font size",
+      "min": 20,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text color (price)",
+      "default": "#8b8b8b"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "related_heading",
+      "label": "Section heading",
+      "default": "You Might Also Like"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "related_product",
+      "name": "Related product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "You Might Also Like",
+      "blocks": [
+        { "type": "related_product" },
+        { "type": "related_product" },
+        { "type": "related_product" },
+        { "type": "related_product" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,212 @@
+{{ 'newsletter-cta.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --nl-bg: {{ section.settings.background_color }};
+    --nl-text: {{ section.settings.text_color }};
+    --nl-input-bg: {{ section.settings.input_background }};
+    --nl-input-text: {{ section.settings.input_text_color }};
+    --nl-button-bg: {{ section.settings.button_background }};
+    --nl-button-text: {{ section.settings.button_text_color }};
+  }
+
+  {%- if section.settings.font_medium_url != blank -%}
+    @font-face {
+      font-family: 'Integra CF';
+      src: url('{{ section.settings.font_medium_url }}') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+  {%- endif -%}
+  {%- if section.settings.font_bold_url != blank -%}
+    @font-face {
+      font-family: 'Integra CF';
+      src: url('{{ section.settings.font_bold_url }}') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .nl-font {
+    font-family: {% if section.settings.font_medium_url != blank or section.settings.font_bold_url != blank %}'Integra CF',{% endif %} {{ section.settings.fallback_font }};
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .nl-heading {
+      font-size: {{ section.settings.heading_size_mobile }}px !important;
+      text-align:left;
+    }
+  }
+{%- endstyle -%}
+
+<div class="nl-wrapper">
+  <div class="nl-bar" style="background-color: var(--nl-bg);">
+    <h2
+      class="nl-font nl-heading"
+      style="
+        color: var(--nl-text);
+        font-size: {{ section.settings.heading_size_desktop }}px;
+        font-weight: {{ section.settings.heading_font_weight }};
+      "
+    >
+      {{ section.settings.heading }}
+    </h2>
+
+    {%- assign nl_form_id = 'nl-form-' | append: section.id -%}
+    {%- form 'customer', id: nl_form_id, class: 'nl-form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="nl-input-row">
+        <input
+          type="email"
+          name="contact[email]"
+          class="nl-font nl-input"
+          placeholder="{{ section.settings.placeholder_text }}"
+          required
+          style="background-color: var(--nl-input-bg); color: var(--nl-input-text);"
+        >
+        <button
+          type="submit"
+          class="nl-font nl-button"
+          style="background-color: var(--nl-button-bg); color: var(--nl-button-text);"
+        >
+          {{ section.settings.button_text }}
+        </button>
+      </div>
+
+      {%- if form.posted_successfully? -%}
+        <p class="nl-success-message">{{ section.settings.success_message }}</p>
+      {%- elsif form.errors -%}
+        <p class="nl-error-message">{{ form.errors.messages['email'] | default: 'Please enter a valid email address.' }}</p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Newsletter CTA",
+  "tag": "section",
+  "class": "section-newsletter-cta",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "STAY UPTO DATE ABOUT OUR LATEST OFFERS"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size — desktop (px)",
+      "min": 16,
+      "max": 44,
+      "step": 1,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size — mobile (px)",
+      "min": 14,
+      "max": 30,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "text",
+      "id": "placeholder_text",
+      "label": "Email field placeholder",
+      "default": "Enter your email address"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Subscribe to Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thanks for subscribing!"
+    },
+    {
+      "type": "header",
+      "content": "Custom font (Integra CF)"
+    },
+    {
+      "type": "url",
+      "id": "font_medium_url",
+      "label": "Integra CF Medium file URL (.woff2)"
+    },
+    {
+      "type": "url",
+      "id": "font_bold_url",
+      "label": "Integra CF Bold file URL (.woff2)"
+    },
+    {
+      "type": "text",
+      "id": "fallback_font",
+      "label": "Fallback font stack",
+      "default": "Helvetica Neue, Arial, sans-serif"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Bar background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Heading text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_background",
+      "label": "Email field background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_text_color",
+      "label": "Email field text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter CTA"
+    }
+  ]
+}
+{% endschema %}

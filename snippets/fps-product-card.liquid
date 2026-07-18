@@ -1,0 +1,119 @@
+{% comment %} {%- liquid
+  assign has_discount = false
+  if product.compare_at_price_max > product.price
+    assign has_discount = true
+    assign discount_percent = product.compare_at_price_max | minus: product.price | times: 100.0 | divided_by: product.compare_at_price_max | round
+  endif
+
+  assign rating_number = blank
+  if show_rating
+    assign rating_metafield = product.metafields[namespace][rating_key]
+    if rating_metafield != blank
+      assign rating_raw = rating_metafield.value
+      if rating_raw.value
+        assign rating_number = rating_raw.value | times: 1.0
+      else
+        assign rating_number = rating_raw | times: 1.0
+      endif
+    elsif show_fallback_rating
+      assign rating_number = fallback_rating
+    endif
+
+    assign rating_count = product.metafields[namespace][rating_count_key].value
+  endif
+
+  if rating_number != blank
+    assign full_stars = rating_number | floor
+    assign has_half_star = false
+    assign remainder = rating_number | minus: full_stars
+    if remainder >= 0.25 and remainder < 0.75
+      assign has_half_star = true
+    elsif remainder >= 0.75
+      assign full_stars = full_stars | plus: 1
+    endif
+    assign empty_stars = 5 | minus: full_stars
+    if has_half_star
+      assign empty_stars = empty_stars | minus: 1
+    endif
+  endif
+-%} {% endcomment %}
+{% liquid
+assign rating_number = product.metafields.custom.custom_rating.value
+assign rating_count = product.metafields.custom.custom_display_review_count.value
+
+  if rating_number != blank
+    assign rating_number = rating_number | times: 1.0
+
+    assign full_stars = rating_number | floor
+    assign has_half_star = false
+
+    assign remainder = rating_number | minus: full_stars
+
+    if remainder >= 0.25 and remainder < 0.75
+      assign has_half_star = true
+    elsif remainder >= 0.75
+      assign full_stars = full_stars | plus: 1
+    endif
+
+    assign empty_stars = 5 | minus: full_stars
+
+    if has_half_star
+      assign empty_stars = empty_stars | minus: 1
+    endif
+  endif
+%}
+{% comment %} {% assign rating_number = 4.8 %}
+{% assign rating_count = 126 %} {% endcomment %}
+
+<a href="{{ product.url }}" class="fps-card">
+  <div class="fps-card-image-wrap" style="background-color: var(--fps-card-bg);">
+    {%- if product.featured_image != blank -%}
+      {{
+        product.featured_image
+        | image_url: width: 800
+        | image_tag:
+          loading: 'lazy',
+          sizes: '(min-width: 990px) 22vw, (min-width: 750px) 45vw, 90vw',
+          widths: '200,400,600,800',
+          class: 'fps-card-image',
+          alt: product.featured_image.alt | default: product.title
+      }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'fps-card-image fps-placeholder' }}
+    {%- endif -%}
+
+    {%- if has_discount -%}
+      <span class="fps-badge" style="background-color: var(--fps-sale-color);">
+        -{{ discount_percent }}%
+      </span>
+    {%- endif -%}
+  </div>
+
+  <div class="fps-card-info">
+    <p class="fps-font fps-card-title" style="color: var(--fps-text-color);">
+      {{ product.title }}
+    </p>
+
+    {%- if rating_number != blank -%}
+      <div class="fps-rating">
+        <span class="fps-stars" aria-hidden="true">
+          {%- for i in (1..full_stars) -%}★{%- endfor -%}
+          {%- if has_half_star -%}⯨{%- endif -%}
+          {%- for i in (1..empty_stars) -%}☆{%- endfor -%}
+        </span>
+        <span class="fps-font fps-rating-label">
+          {{ rating_number }}/5
+        </span>
+      </div>
+    {%- endif -%}
+
+    <div class="fps-price-row">
+      <span class="fps-font fps-price" style="color: var(--fps-price-color);">
+        {{ product.price | money }}
+      </span>
+      {%- if has_discount -%}
+        <span class="fps-font fps-compare-price">{{ product.compare_at_price_max | money }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</a>

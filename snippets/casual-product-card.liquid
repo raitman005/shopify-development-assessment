@@ -1,0 +1,76 @@
+{%- liquid
+  assign color_tags = ''
+  assign size_tags = ''
+  assign type_tags = ''
+  assign style_tags = ''
+
+  for tag in product.tags
+    assign tag_down = tag | handleize
+    if tag_down contains 'color_'
+      assign color_tags = color_tags | append: tag_down | append: ' '
+    endif
+    if tag_down contains 'size_'
+      assign size_tags = size_tags | append: tag_down | append: ' '
+    endif
+    if tag_down contains 'type_'
+      assign type_tags = type_tags | append: tag_down | append: ' '
+    endif
+    if tag_down contains 'style_'
+      assign style_tags = style_tags | append: tag_down | append: ' '
+    endif
+  endfor
+
+  assign compare_price = product.compare_at_price
+  assign is_on_sale = false
+  if compare_price > product.price
+    assign is_on_sale = true
+    assign discount_pct = compare_price | minus: product.price | times: 100.0 | divided_by: compare_price | round
+  endif
+
+  assign rating = product.metafields.reviews.rating.value.rating | default: 4.5
+  assign rating_count = product.metafields.reviews.rating_count | default: 1
+-%}
+
+<a
+  href="{{ product.url }}"
+  class="cc-card"
+  data-cc-product
+  data-price="{{ product.price | divided_by: 100.0 }}"
+  data-colors="{{ color_tags | strip }}"
+  data-sizes="{{ size_tags | strip }}"
+  data-types="{{ type_tags | strip }}"
+  data-styles="{{ style_tags | strip }}"
+>
+  <div class="cc-card-image">
+    {%- if product.featured_image -%}
+      <img
+        src="{{ product.featured_image | image_url: width: 600 }}"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        loading="lazy"
+        width="600"
+        height="{{ 600 | divided_by: product.featured_image.aspect_ratio | default: 600 }}"
+      >
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'cc-placeholder-svg' }}
+    {%- endif -%}
+    {%- if is_on_sale -%}
+      <span class="cc-badge">-{{ discount_pct }}%</span>
+    {%- endif -%}
+  </div>
+
+  <div class="cc-card-body">
+    <h3 class="cc-card-title">{{ product.title }}</h3>
+
+    <div class="cc-card-rating" aria-label="Rated {{ rating }} out of 5">
+      <span class="cc-stars" style="--rating: {{ rating | times: 20 }}%;" aria-hidden="true">★★★★★</span>
+      <span class="cc-rating-value">{{ rating }}/5</span>
+    </div>
+
+    <div class="cc-card-price">
+      <span class="cc-price-now">{{ product.price | money_without_trailing_zeros }}</span>
+      {%- if is_on_sale -%}
+        <span class="cc-price-was">{{ compare_price | money_without_trailing_zeros }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</a>

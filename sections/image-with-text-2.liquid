@@ -1,0 +1,436 @@
+<style>
+  {% comment %} h1,h2,h3,h4,h5{
+    font-family:IntegralCFMed, sans-serif !important;
+  } {% endcomment %}
+
+  .hero-banner-{{ section.id }} {
+    --heading-size-desktop: {{ section.settings.heading_size_desktop }}px;
+    --heading-size-mobile: {{ section.settings.heading_size_mobile }}px;
+    --subheading-size-desktop: {{ section.settings.subheading_size_desktop }}px;
+    --subheading-size-mobile: {{ section.settings.subheading_size_mobile }}px;
+    --stat-number-size-desktop: {{ section.settings.stat_number_size_desktop }}px;
+    --stat-number-size-mobile: {{ section.settings.stat_number_size_mobile }}px;
+    --bg-color: {{ section.settings.background_color }};
+    --heading-color: {{ section.settings.heading_color }};
+    --text-color: {{ section.settings.text_color }};
+    --button-bg: {{ section.settings.button_bg_color }};
+    --button-text: {{ section.settings.button_text_color }};
+  }
+
+  .hero-banner-{{ section.id }} {
+    background-color: var(--bg-color);
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .hero-banner-{{ section.id }} .hero-inner {
+    {% comment %} display: flex;
+    flex-wrap: wrap;
+    align-items: stretch; {% endcomment %}
+
+    display:grid;
+    grid-template-columns:45% 55%;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .hero-banner-{{ section.id }} .hero-content {
+    {% comment %} flex: 1 1 480px; {% endcomment %}
+    min-width: 300px;
+    {% comment %} display: flex;
+    flex-direction: column;
+    justify-content: start; {% endcomment %}
+    padding: 48px 40px;
+    box-sizing: border-box;
+  }
+
+  .hero-banner-{{ section.id }} .hero-heading {
+    font-family: 'IntegralCFMed', sans-serif;
+    font-weight: {{ section.settings.heading_font_weight }};
+    font-size: var(--heading-size-mobile);
+    line-height: 1.05;
+    text-transform: uppercase;
+    color: var(--heading-color);
+    margin: 0 0 20px 0;
+    letter-spacing: -0.5px;
+  }
+
+  .hero-banner-{{ section.id }} .hero-subheading {
+    font-family: 'Satoshi Variable', system-ui;
+    font-weight: 400;
+    font-size: var(--subheading-size-mobile);
+    line-height: 1.5;
+    color: var(--text-color);
+    max-width: 545px;
+    margin: 0 0 28px 0;
+  }
+
+  .hero-banner-{{ section.id }} .hero-button {
+    display: inline-block;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    font-family: 'Satoshi Variable', system-ui;
+    font-weight: {{ section.settings.button_font_weight }};
+    font-size: 16px;
+    padding: 10px 100px;
+    border-radius: 62px;
+    text-decoration: none;
+    text-align: center;
+    width: fit-content;
+    margin-bottom: 40px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .hero-banner-{{ section.id }} .hero-button:hover {
+    opacity: 0.85;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stat {
+    padding-right: 24px;
+    border-right: 1px solid #d9d9d9;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stat:last-child {
+    border-right: none;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stat-number {
+    font-family: 'Integra CF', Arial, sans-serif;
+    font-weight: 700;
+    font-size: var(--stat-number-size-mobile);
+    color: var(--heading-color);
+    margin: 0;
+    line-height: 1;
+  }
+
+  .hero-banner-{{ section.id }} .hero-stat-label {
+    font-family: 'Integra CF', Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--text-color);
+    margin: 6px 0 0 0;
+  }
+
+  .hero-banner-{{ section.id }} .hero-image-wrapper {
+    {% comment %} flex: 1 1 480px;
+    min-width: 300px;
+    position: relative; {% endcomment %}
+    overflow: hidden;
+    height:125vh;
+  }
+
+  .hero-banner-{{ section.id }} .hero-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position:left center;
+    display: block;
+  }
+
+  @media screen and (min-width: 768px) {
+    .hero-banner-{{ section.id }} .hero-heading {
+      font-size: var(--heading-size-desktop);
+    }
+    .hero-banner-{{ section.id }} .hero-subheading {
+      font-size: var(--subheading-size-desktop);
+    }
+    .hero-banner-{{ section.id }} .hero-stat-number {
+      font-size: var(--stat-number-size-desktop);
+    }
+    {% comment %} .hero-banner-{{ section.id }} .hero-content {
+      padding: 64px 80px;
+    } {% endcomment %}
+  }
+
+  @media screen and (max-width: 480px) {
+    .hero-banner-{{section.id}} .hero-inner{
+      grid-template-columns:100%;
+    }
+    .hero-banner-{{ section.id }} .hero-image-wrapper {
+      min-height: 320px;
+    }
+    .hero-banner-{{ section.id }} .hero-content{
+      padding:48px 20px;
+    }
+    .hero-banner-{{ section.id }} .hero-stats {
+      gap: 16px;
+    }
+    .hero-banner-{{ section.id }} .hero-stat {
+      padding-right: 16px;
+    }
+
+    .hero-banner-{{ section.id }} .hero-button {
+      width:100%;
+    }
+  }
+</style>
+
+<section class="hero-banner-{{ section.id }}">
+  <div class="hero-inner">
+    <div class="hero-content">
+      {% if section.settings.heading != blank %}
+        <h1 class="hero-heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+
+      {% if section.settings.subheading != blank %}
+        <p class="hero-subheading">{{ section.settings.subheading }}</p>
+      {% endif %}
+
+      {% if section.settings.button_label != blank %}
+        <a href="{{ section.settings.button_link | default: '#' }}" class="hero-button">
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+
+      <div class="hero-stats">
+        {% for block in section.blocks %}
+          {% if block.type == 'stat' %}
+            <div class="hero-stat" {{ block.shopify_attributes }}>
+              <p class="hero-stat-number">{{ block.settings.stat_number }}</p>
+              <p class="hero-stat-label">{{ block.settings.stat_label }}</p>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div
+      class="hero-image-wrapper"
+      {% if section.settings.image != blank %}
+        style="background-image: url('{{ section.settings.image | image_url: width: 2000 }}');        
+          background-size: cover;
+          background-position: top center;
+          background-repeat: no-repeat;"
+      {% else %}
+        style="background-image: url('{{ 'lifestyle-1' | placeholder_svg_tag }}');"
+      {% endif %}
+    >&nbsp;</div>
+    {% comment %} <div class="hero-image-wrapper">
+      {% if section.settings.image != blank %}
+        {{ section.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy', alt: section.settings.image_alt }}
+      {% else %}
+        {{ 'lifestyle-1' | placeholder_svg_tag }}
+      {% endif %}
+    </div> {% endcomment %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "FIND CLOTHES THAT MATCH YOUR STYLES"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style."
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button font weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Banner image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text"
+    },
+    {
+      "type": "header",
+      "content": "Font weight"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading font weight",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "header",
+      "content": "Font sizes - Desktop"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading size (desktop)",
+      "min": 24,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_desktop",
+      "label": "Subheading size (desktop)",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "stat_number_size_desktop",
+      "label": "Stat number size (desktop)",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Font sizes - Mobile"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size (mobile)",
+      "min": 20,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mobile",
+      "label": "Subheading size (mobile)",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "stat_number_size_mobile",
+      "label": "Stat number size (mobile)",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#F2F0F1"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text color",
+      "default": "#4B4B4B"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "stat_number",
+          "label": "Number",
+          "default": "200+"
+        },
+        {
+          "type": "text",
+          "id": "stat_label",
+          "label": "Label",
+          "default": "International Brands"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Hero Banner",
+      "blocks": [
+        { "type": "stat", "settings": { "stat_number": "200+", "stat_label": "International Brands" } },
+        { "type": "stat", "settings": { "stat_number": "2,000+", "stat_label": "High-Quality Products" } },
+        { "type": "stat", "settings": { "stat_number": "30,000+", "stat_label": "Happy Customers" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

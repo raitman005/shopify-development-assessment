@@ -1,0 +1,372 @@
+{% comment %}
+  Section: Product Media + Info
+  Shows the image gallery, title, rating, price, color/size selectors,
+  quantity stepper and Add to Cart form. Pair this with the
+  "product-tabs.liquid" and "related-products.liquid" sections on the
+  same product template — they share the same stylesheet and design
+  tokens but are fully independent sections.
+{% endcomment %}
+
+{{ 'custom-product-page.css' | asset_url | stylesheet_tag }}
+
+<style>
+
+  #shopify-section-{{ section.id }} {
+    --cpp-heading-font: 'IntegralCF', 'Helvetica Neue', Arial, sans-serif;
+    --cpp-heading-weight: {{ section.settings.title_font_weight }};
+    --cpp-body-font: 'Satoshi Variable', -apple-system, BlinkMacSystemFont, sans-serif;
+    --cpp-title-size: {{ section.settings.title_font_size }}px;
+    --cpp-price-size: {{ section.settings.price_font_size }}px;
+    --cpp-desc-size: {{ section.settings.description_font_size }}px;
+    --cpp-subheading-size: {{ section.settings.subheading_font_size }}px;
+    --cpp-accent: {{ section.settings.accent_color }};
+    --cpp-text: {{ section.settings.text_color }};
+    --cpp-muted: {{ section.settings.muted_color }};
+    --cpp-border: {{ section.settings.border_color }};
+    --cpp-sale-bg: {{ section.settings.sale_badge_bg }};
+    --cpp-sale-text: {{ section.settings.sale_badge_text_color }};
+    background: {{ section.settings.background_color }};
+    font-family: var(--cpp-body-font);
+    color: var(--cpp-text);
+  }
+</style>
+
+<div class="cpp-wrapper" id="shopify-section-{{ section.id }}">
+
+  {% if section.settings.show_breadcrumb %}
+  <nav class="cpp-breadcrumb" aria-label="breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a>
+    <span>&gt;</span>
+    <a href="{{ routes.all_products_collection_url }}">Shop</a>
+    <span>&gt;</span>
+    {% if product.collections.first %}
+      <a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>
+      <span>&gt;</span>
+    {% endif %}
+    <span class="cpp-breadcrumb-current">{{ product.title }}</span>
+  </nav>
+  {% endif %}
+
+  <div class="cpp-main">
+    <!-- GALLERY -->
+    <div class="cpp-gallery">
+      <div class="cpp-thumbs" id="cpp-thumbs-{{ section.id }}">
+        {% for image in product.images %}
+          <button
+            type="button"
+            class="cpp-thumb{% if forloop.first %} is-active{% endif %}"
+            data-cpp-thumb
+            data-full="{{ image | image_url: width: 1200 }}"
+            aria-label="Show image {{ forloop.index }}"
+          >
+            <img src="{{ image | image_url: width: 200 }}" width="" height="" alt="{{ image.alt | escape }}" loading="lazy">
+          </button>
+        {% else %}
+          <button type="button" class="cpp-thumb is-active" data-cpp-thumb data-full="{{ 'product-1.jpg' | asset_url }}">
+            <img src="{{ 'product-1.jpg' | asset_url }}" width="" height="" alt="{{ product.title }}">
+          </button>
+        {% endfor %}
+      </div>
+      <div class="cpp-main-image">
+        <img
+          id="cpp-main-image-{{ section.id }}"
+          src="{{ product.featured_image | image_url: width: 1200 }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          loading="eager"
+          width="" height=""
+        >
+      </div>
+    </div>
+
+    <!-- PRODUCT INFO -->
+    <div class="cpp-info">
+      <h1 class="cpp-title">{{ product.title }}</h1>
+
+      <div class="cpp-rating">
+        <span class="cpp-stars" aria-hidden="true">
+          {% assign full_stars = section.settings.rating_value | floor %}
+          {% assign has_half = false %}
+          {% assign remainder = section.settings.rating_value | minus: full_stars %}
+          {% if remainder >= 0.25 and remainder < 0.75 %}{% assign has_half = true %}{% endif %}
+          {% if remainder >= 0.75 %}{% assign full_stars = full_stars | plus: 1 %}{% endif %}
+          {% assign half_position = full_stars | plus: 1 %}
+          {% for i in (1..5) %}
+            {% if i <= full_stars %}★{% elsif has_half and i == half_position %}⯪{% else %}☆{% endif %}
+          {% endfor %}
+        </span>
+        <span class="cpp-rating-value">{{ section.settings.rating_value }}/5</span>
+      </div>
+
+      <div class="cpp-price-row">
+        <span class="cpp-price">{{ product.price | money }}</span>
+        {% if product.compare_at_price > product.price %}
+          <span class="cpp-compare-price">{{ product.compare_at_price | money }}</span>
+          {% assign discount = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price %}
+          <span class="cpp-sale-badge">-{{ discount | round }}%</span>
+        {% endif %}
+      </div>
+
+      <p class="cpp-description">{{ product.description | strip_html | truncatewords: 40 }}</p>
+
+      <div class="cpp-divider"></div>
+
+      {% assign color_option_index = -1 %}
+      {% assign size_option_index = -1 %}
+      {% for option in product.options_with_values %}
+        {% if option.name == 'Color' or option.name == 'Colour' %}
+          {% assign color_option_index = forloop.index0 %}
+        {% endif %}
+        {% if option.name == 'Size' %}
+          {% assign size_option_index = forloop.index0 %}
+        {% endif %}
+      {% endfor %}
+
+      {% if color_option_index > -1 %}
+        {% assign color_option = product.options_with_values[color_option_index] %}
+        <div class="cpp-option-group">
+          <p class="cpp-option-label">Select Colors</p>
+          <div class="cpp-swatches">
+            {% for value in color_option.values %}
+              {% assign swatch_hex = '#6b6650' %}
+              {% case value | downcase %}
+                {% when 'olive' or 'green' or 'khaki' %}{% assign swatch_hex = '#5c5e3f' %}
+                {% when 'dark green' or 'forest' %}{% assign swatch_hex = '#25462f' %}
+                {% when 'navy' or 'blue' %}{% assign swatch_hex = '#1c2340' %}
+                {% when 'black' %}{% assign swatch_hex = '#111111' %}
+                {% when 'white' %}{% assign swatch_hex = '#ffffff' %}
+                {% when 'red' %}{% assign swatch_hex = '#8c2f2f' %}
+              {% endcase %}
+              <button
+                type="button"
+                class="cpp-swatch{% if forloop.first %} is-selected{% endif %}"
+                style="background-color: {{ swatch_hex }};"
+                data-cpp-swatch
+                data-value="{{ value | escape }}"
+                aria-label="{{ value }}"
+              >
+                <span class="cpp-swatch-check">✓</span>
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if size_option_index > -1 %}
+        {% assign size_option = product.options_with_values[size_option_index] %}
+        <div class="cpp-option-group">
+          <p class="cpp-option-label">Choose Size</p>
+          <div class="cpp-sizes">
+            {% for value in size_option.values %}
+              <button
+                type="button"
+                class="cpp-size{% if forloop.index == 3 %} is-selected{% endif %}"
+                data-cpp-size
+                data-value="{{ value | escape }}"
+              >{{ value }}</button>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="cpp-divider"></div>
+
+      <form method="post" action="/cart/add" id="cpp-product-form-{{ section.id }}" class="cpp-add-to-cart-row">
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" id="cpp-variant-id-{{ section.id }}">
+        <div class="cpp-quantity">
+          <button type="button" class="cpp-qty-btn" data-cpp-qty-minus aria-label="Decrease quantity">−</button>
+          <input type="number" name="quantity" value="1" min="1" id="cpp-qty-{{ section.id }}" class="cpp-qty-input" readonly>
+          <button type="button" class="cpp-qty-btn" data-cpp-qty-plus aria-label="Increase quantity">+</button>
+        </div>
+        <button type="submit" class="cpp-add-to-cart-btn">
+          {{ section.settings.add_to_cart_text | default: 'Add to Cart' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.getElementById('shopify-section-{{ section.id }}');
+    if (!root) return;
+
+    // Thumbnail gallery
+    var mainImage = document.getElementById('cpp-main-image-{{ section.id }}');
+    root.querySelectorAll('[data-cpp-thumb]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        root.querySelectorAll('[data-cpp-thumb]').forEach(function (b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        if (mainImage) mainImage.src = btn.getAttribute('data-full');
+      });
+    });
+
+    // Color swatches
+    root.querySelectorAll('[data-cpp-swatch]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        root.querySelectorAll('[data-cpp-swatch]').forEach(function (b) { b.classList.remove('is-selected'); });
+        btn.classList.add('is-selected');
+      });
+    });
+
+    // Size selector
+    root.querySelectorAll('[data-cpp-size]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        root.querySelectorAll('[data-cpp-size]').forEach(function (b) { b.classList.remove('is-selected'); });
+        btn.classList.add('is-selected');
+      });
+    });
+
+    // Quantity stepper
+    var qtyInput = document.getElementById('cpp-qty-{{ section.id }}');
+    var minusBtn = root.querySelector('[data-cpp-qty-minus]');
+    var plusBtn = root.querySelector('[data-cpp-qty-plus]');
+    if (minusBtn && plusBtn && qtyInput) {
+      minusBtn.addEventListener('click', function () {
+        var val = parseInt(qtyInput.value, 10) || 1;
+        qtyInput.value = Math.max(1, val - 1);
+      });
+      plusBtn.addEventListener('click', function () {
+        var val = parseInt(qtyInput.value, 10) || 1;
+        qtyInput.value = val + 1;
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product Media + Info",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Title font weight (Integra CF)",
+      "options": [
+        { "value": "500", "label": "Medium" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "label": "Product title font size",
+      "min": 20,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "price_font_size",
+      "label": "Price font size",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "description_font_size",
+      "label": "Description font size",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "subheading_font_size",
+      "label": "Subheading font size (e.g. Select Colors)",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text color",
+      "default": "#8b8b8b"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (buttons)",
+      "default": "#0f0f0f"
+    },
+    {
+      "type": "color",
+      "id": "sale_badge_bg",
+      "label": "Sale badge background",
+      "default": "#fde8e8"
+    },
+    {
+      "type": "color",
+      "id": "sale_badge_text_color",
+      "label": "Sale badge text color",
+      "default": "#e5484d"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb navigation",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "rating_value",
+      "label": "Star rating value",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "default": 4.5
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_text",
+      "label": "Add to Cart button text",
+      "default": "Add to Cart"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Media + Info"
+    }
+  ]
+}
+{% endschema %}
